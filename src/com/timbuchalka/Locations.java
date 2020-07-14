@@ -54,10 +54,15 @@ public class Locations implements Map<Integer, Location> {
                 String description = scanner.nextLine();
                 System.out.println("Imported loc: " + loc + ": " + description);
                 locations.put(loc, new Location(loc, description, null));
-        }
-
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        try (BufferedReader dirFile = Files.newBufferedWriter(dirPath)) {
+            String input;
+
+
         }
 
 
