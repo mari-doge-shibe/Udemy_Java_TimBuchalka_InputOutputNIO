@@ -1,6 +1,8 @@
 package com.timbuchalka;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,7 +19,7 @@ public class Locations implements Map<Integer, Location> {
         Path locPath = FileSystems.getDefault().getPath("locations_big.txt");
         Path dirPath = FileSystems.getDefault().getPath("directions_big.txt");
         try (BufferedWriter locFile = Files.newBufferedWriter(locPath);
-                  BufferedWriter dirFile = Files.newBufferedWriter(dirPath)) {
+             BufferedWriter dirFile = Files.newBufferedWriter(dirPath)) {
 
             for (Location location : locations.values()) {
                 locFile.write(location.getLocationID() + "," + location.getDescription() + "\n");
@@ -28,7 +30,7 @@ public class Locations implements Map<Integer, Location> {
                     }
                 }
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
 
         }
@@ -48,7 +50,7 @@ public class Locations implements Map<Integer, Location> {
 
         try (Scanner scanner = new Scanner(Files.newBufferedReader(locPath))) {
             scanner.useDelimiter(",");
-            while(scanner.hasNextLine()) {
+            while (scanner.hasNextLine()) {
                 int loc = scanner.nextInt();
                 scanner.skip(scanner.delimiter());
                 String description = scanner.nextLine();
@@ -59,12 +61,22 @@ public class Locations implements Map<Integer, Location> {
             e.printStackTrace();
         }
 
-        try (BufferedReader dirFile = Files.newBufferedWriter(dirPath)) {
+        try (BufferedReader dirFile = Files.newBufferedReader(dirPath)) {
             String input;
 
+            while ((input = dirFile.readLine()) != null) {
+                String[] data = input.split(",");
+                int loc = Integer.parseInt(data[0]);
+                String direction = data[1];
+                int destination = Integer.parseInt(data[2]);
+                System.out.println(loc + ": " + direction + ": " + destination);
+                Location location = locations.get(loc);
+                location.addExit(direction, destination);
+            }
 
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
 
     }
 
